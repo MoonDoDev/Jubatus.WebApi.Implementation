@@ -1,0 +1,58 @@
+# docker build -f dockerfile.gateway -t users.gateway:v1 .
+# docker build -f dockerfile.service -t users.service:v1 .
+services:
+  api-gateway:
+    image: users.gateway:v1
+    ports:
+      - 6080:7047
+    links:
+      - users-api
+    volumes:
+      - ${HOME}/.microsoft/usersecrets/:/root/.microsoft/usersecrets
+      - ${HOME}/.aspnet/https:/root/.aspnet/https/
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Production
+      - ASPNETCORE_HTTP_PORTS=7047
+      - JwtSettings:ValidateLifetime=${ValidateLifetime}
+      - JwtSettings:ValidateIssuerSigningKey=${ValidateIssuerSigningKey}
+      - JwtSettings:ValidateIssuer=${ValidateIssuer}
+      - JwtSettings:ValidateAudience=${ValidateAudience}
+      - JwtSettings:JwtKey=${JwtKey}
+      - JwtSettings:JwtIssuer=${JwtIssuer}
+      - JwtSettings:JwtAudience=${JwtAudience}
+      - JwtSettings:AuthUser=${AuthUser}
+      - JwtSettings:AuthPass=${AuthPass}
+      - ReverseProxy:Clusters:users-cluster:Destinations:destination1:Address=http://users-api:7048/
+  users-api:
+    image: users.service:v1
+    ports:
+      - 7048:7048
+    links:
+      - monguito-db
+    environment:
+      - MongoDbSettings:Host=monguito-db
+      - MongoDbSettings:UserName=${UserName}
+      - MongoDbSettings:UserPass=${UserPass}
+      - JwtSettings:ValidateLifetime=${ValidateLifetime}
+      - JwtSettings:ValidateIssuerSigningKey=${ValidateIssuerSigningKey}
+      - JwtSettings:ValidateIssuer=${ValidateIssuer}
+      - JwtSettings:ValidateAudience=${ValidateAudience}
+      - JwtSettings:JwtKey=${JwtKey}
+      - JwtSettings:JwtIssuer=${JwtIssuer}
+      - JwtSettings:JwtAudience=${JwtAudience}
+      - JwtSettings:AuthUser=${AuthUser}
+      - JwtSettings:AuthPass=${AuthPass}
+      - ServiceSettings:ServiceName=UsersMicroService
+      - ASPNETCORE_HTTP_PORTS=7048
+  monguito-db:
+    image: mongo
+    ports:
+      - 27017:27017
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=${UserName}
+      - MONGO_INITDB_ROOT_PASSWORD=${UserPass}
+    volumes:
+      - mongodbdata:/data/db
+
+volumes:
+  mongodbdata:

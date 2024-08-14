@@ -1,0 +1,16 @@
+{
+    "editor.minimap.enabled": false,
+    "editor.formatOnSave": true,
+    "files.autoSave": "afterDelay",
+    "editor.formatOnPaste": true,
+    "git.openRepositoryInParentFolders": "never",
+    "window.zoomLevel": -0.5,
+    "redhat.telemetry.enabled": true,
+    "workbench.startupEditor": "none",
+    "editor.accessibilitySupport": "off",
+    "editor.fontFamily": "'Iosevka Fixed', Sudo, 'Monaspace Neon', 'Cascadia Code', monospace",
+    "editor.fontLigatures": true,
+    "workbench.colorTheme": "GitHub Dark Dimmed",
+    "editor.fontSize": 14,
+    "editor.formatOnType": true
+}
