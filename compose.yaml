@@ -1,8 +1,8 @@
-# docker build -f dockerfile.gateway -t users.gateway:v1 .
-# docker build -f dockerfile.service -t users.service:v1 .
+# docker build -f dockerfile.gateway -t users.gateway:v2 .
+# docker build -f dockerfile.service -t users.service:v2 .
 services:
   api-gateway:
-    image: users.gateway:v1
+    image: users.gateway:v2
     ports:
       - 6080:7047
     links:
@@ -24,7 +24,7 @@ services:
       - JwtSettings:AuthPass=${AuthPass}
       - ReverseProxy:Clusters:users-cluster:Destinations:destination1:Address=http://users-api:7048/
   users-api:
-    image: users.service:v1
+    image: users.service:v2
     ports:
       - 7048:7048
     links:
