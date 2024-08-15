@@ -10,9 +10,9 @@
             "request": "launch",
             "preLaunchTask": "build",
             // If you have changed target frameworks, make sure to update the program path.
-            "program": "${workspaceFolder}/api.gateway.users/bin/Debug/net8.0/api.gateway.users.dll",
+            "program": "${workspaceFolder}/api.service.users/bin/Debug/net8.0/api.service.users.dll",
             "args": [],
-            "cwd": "${workspaceFolder}/api.gateway.users",
+            "cwd": "${workspaceFolder}/api.service.users",
             "stopAtEntry": false,
             // Enable launching a web browser when ASP.NET Core starts. For more information: https://aka.ms/VSCode-CS-LaunchJson-WebBrowser
             "serverReadyAction": {

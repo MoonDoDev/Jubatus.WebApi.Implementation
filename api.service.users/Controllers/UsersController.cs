@@ -4,7 +4,6 @@ using Microsoft.AspNetCore.Mvc;
 using Api.Service.Users.Dtos;
 using Api.Service.Users.Models;
 using Microsoft.AspNetCore.Authorization;
-using Jubatus.Common.Serilog;
 using Api.Service.Users.Settings;
 
 namespace Api.Service.Users.Controllers;
@@ -40,7 +39,7 @@ public class UsersController : ControllerBase
     public async Task<IActionResult> GetAllRecordsAsync()
     {
         IReadOnlyCollection<UsersEntity> result = await _usersRepository.GetAllAsync().ConfigureAwait(false);
-        using Serilog.Core.Logger log = Serilogger.GetLogger();
+        using Serilog.Core.Logger log = Logger.GetLogger(LoggerMinLevel.Debug);
 
         log.Debug("GetAllRecordsAsync( returns: {Count} records ), resultCode: {Code}, resultMessage: {Msg}",
             result.Count, _usersRepository.ResultCode, _usersRepository.ResultMessage);
@@ -60,7 +59,7 @@ public class UsersController : ControllerBase
     public async Task<IActionResult> GetOneRecordAsync([FromQuery] Guid id)
     {
         UsersEntity result = await _usersRepository.GetAsync(id).ConfigureAwait(false);
-        using Serilog.Core.Logger log = Serilogger.GetLogger();
+        using Serilog.Core.Logger log = Logger.GetLogger(LoggerMinLevel.Debug);
 
         log.Debug("GetOneRecordAsync( returns: {@Record} ), resultCode: {Code}, resultMessage: {Msg}",
             result, _usersRepository.ResultCode, _usersRepository.ResultMessage);
@@ -104,7 +103,7 @@ public class UsersController : ControllerBase
         };
 
         await _usersRepository.CreateAsync(newUser).ConfigureAwait(false);
-        using Serilog.Core.Logger log = Serilogger.GetLogger();
+        using Serilog.Core.Logger log = Logger.GetLogger(LoggerMinLevel.Debug);
 
         log.Debug("CreateRecordAsync( creates: {@Record} ), resultCode: {Code}, resultMessage: {Msg}",
             newUser, _usersRepository.ResultCode, _usersRepository.ResultMessage);
@@ -150,7 +149,7 @@ public class UsersController : ControllerBase
         };
 
         await _usersRepository.UpdateAsync(updatedItem).ConfigureAwait(false);
-        using Serilog.Core.Logger log = Serilogger.GetLogger();
+        using Serilog.Core.Logger log = Logger.GetLogger(LoggerMinLevel.Debug);
 
         log.Debug("UpdateRecordAsync( updates: {@Record} ), resultCode: {Code}, resultMessage: {Msg}",
             updatedItem, _usersRepository.ResultCode, _usersRepository.ResultMessage);
@@ -174,7 +173,7 @@ public class UsersController : ControllerBase
     public async Task<IActionResult> DeleteRecordAsync([FromQuery] Guid id)
     {
         await _usersRepository.RemoveAsync(id).ConfigureAwait(false);
-        using Serilog.Core.Logger log = Serilogger.GetLogger();
+        using Serilog.Core.Logger log = Logger.GetLogger(LoggerMinLevel.Debug);
 
         log.Debug("DeleteRecordAsync( resultCode: {Code}, resultMessage: {Msg} )",
             _usersRepository.ResultCode, _usersRepository.ResultMessage);

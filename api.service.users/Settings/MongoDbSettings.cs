@@ -1,6 +1,9 @@
+using Destructurama.Attributed;
+using Jubatus.Common.Settings;
+
 namespace Api.Service.Users.Settings;
 
-public record MongoDbSettings
+public record MongoDbSettings : IMongoSettings
 {
     /// <summary>
     /// Ubicación de la instancia de MongoDB
@@ -20,10 +23,17 @@ public record MongoDbSettings
     /// <summary>
     /// Clave de acceso del usuario de conexión a la instancia de MongoDB
     /// </summary>
+    [NotLogged]
     public string? UserPass { get; init; }
+
+    /// <summary>
+    /// Nombre del Servicio que se conecta a la instancia de MongoDB (Nombre que se tomará para nombrar la BD)
+    /// </summary>
+    public string? ServiceName { get; init; }
 
     /// <summary>
     /// Cadena de configuración para la conxión a la instancia de MongoDB
     /// </summary>
+    [NotLogged]
     public string ConnectionString => $"mongodb://{UserName}:{UserPass}@{Host}:{Port}";
 }

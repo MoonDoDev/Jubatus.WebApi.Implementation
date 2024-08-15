@@ -1,10 +1,14 @@
+using Destructurama.Attributed;
+using Jubatus.Common.Settings;
+
 namespace Api.Gateway.Users.Settings;
 
-public record JwtSettings
+public record JwtSettings : IJwtSettings
 {
     /// <summary>
     /// 
     /// </summary>
+    [NotLogged]
     public string? JwtKey { get; init; }
 
     /// <summary>
@@ -20,30 +24,32 @@ public record JwtSettings
     /// <summary>
     /// 
     /// </summary>
-    public bool ValidateIssuer { get; init; }
+    public string? ValidateIssuer { get; init; }
 
     /// <summary>
     /// 
     /// </summary>
-    public bool ValidateAudience { get; init; }
+    public string? ValidateAudience { get; init; }
 
     /// <summary>
     /// 
     /// </summary>
-    public bool ValidateLifetime { get; init; }
+    public string? ValidateLifetime { get; init; }
 
     /// <summary>
     /// 
     /// </summary>
-    public bool ValidateIssuerSigningKey { get; init; }
+    public string? ValidateIssuerSigningKey { get; init; }
 
     /// <summary>
     /// 
     /// </summary>
+    [NotLogged]
     public string? AuthUser { get; init; }
 
     /// <summary>
     /// 
     /// </summary>
+    [NotLogged]
     public string? AuthPass { get; init; }
 }

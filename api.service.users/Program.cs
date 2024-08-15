@@ -6,7 +6,7 @@ using Api.Service.Users;
 using Api.Service.Users.Models;
 using Api.Service.Users.Settings;
 using Asp.Versioning;
-using Jubatus.Common.MongoDB;
+using Jubatus.Common;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.AspNetCore.RateLimiting;
@@ -22,70 +22,15 @@ builder.Services.AddEndpointsApiExplorer();
 MongoDbSettings? mongoDbSettings = builder.Configuration.GetSection(nameof(MongoDbSettings)).Get<MongoDbSettings>();
 ArgumentNullException.ThrowIfNull(mongoDbSettings);
 
-ServiceSettings? serviceSettings = builder.Configuration.GetSection(nameof(ServiceSettings)).Get<ServiceSettings>();
-ArgumentNullException.ThrowIfNull(serviceSettings);
-
 // Add services to the container.
-builder.Services.AddMongo(serviceSettings.ServiceName!, mongoDbSettings.ConnectionString)
+builder.Services.AddMongo(mongoDbSettings)
     .AddMongoRepository<UsersEntity>(ApiMessages.ServiceCollectionName);
-
-// Configuramos el Swagger para que nos permita ejecutar las API's desde el Navegador de forma segura con un BearerToken
-builder.Services.AddSwaggerGen(c =>
-{
-    c.AddSecurityDefinition(ApiMessages.SecurityDefinitionName, new OpenApiSecurityScheme
-    {
-        Description = @"JMT Authorization header using the Bearer scheme. \r\n\r\n
-            Enter 'Bearer' [space] and then your token in the text input below. \r\n\r\n
-            Example: 'Bearer 12345abcdef'",
-        Name = "Authorization",
-        In = ParameterLocation.Header,
-        Type = SecuritySchemeType.ApiKey,
-        Scheme = ApiMessages.SecurityDefinitionName
-    });
-
-    c.AddSecurityRequirement(new OpenApiSecurityRequirement()
-    {
-        {
-            new OpenApiSecurityScheme
-            {
-                Reference = new OpenApiReference
-                {
-                    Type = ReferenceType.SecurityScheme,
-                    Id = ApiMessages.SecurityDefinitionName
-                },
-                Scheme = "oauth2",
-                Name = ApiMessages.SecurityDefinitionName,
-                In = ParameterLocation.Header,
-            },
-            new List<string>()
-        }
-    });
-});
 
 JwtSettings? jwtSettings = builder.Configuration.GetSection(nameof(JwtSettings)).Get<JwtSettings>();
 ArgumentNullException.ThrowIfNull(jwtSettings);
 
-// Adding JWT
-builder.Services.AddAuthentication(auth =>
-{
-    auth.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-    auth.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-}).AddJwtBearer(o =>
-{
-    byte[] Key = Encoding.UTF8.GetBytes(jwtSettings.JwtKey!);
-
-    o.SaveToken = true;
-    o.TokenValidationParameters = new TokenValidationParameters
-    {
-        ValidateIssuer = Convert.ToBoolean(jwtSettings.ValidateIssuer),
-        ValidateAudience = Convert.ToBoolean(jwtSettings.ValidateAudience),
-        ValidateLifetime = Convert.ToBoolean(jwtSettings.ValidateLifetime),
-        ValidateIssuerSigningKey = Convert.ToBoolean(jwtSettings.ValidateIssuerSigningKey),
-        ValidIssuer = jwtSettings.JwtIssuer,
-        ValidAudience = jwtSettings.JwtAudience,
-        IssuerSigningKey = new SymmetricSecurityKey(Key)
-    };
-});
+// Configuramos el Servicio para ejecutar las API's de forma segura con un BearerToken
+builder.Services.AddJwtAuthentication(jwtSettings);
 
 /// Requests Rate Limiter by Stefan Djokic → Email URL: https://mail.google.com/mail/u/0/?ogbl#label/Newsletter%2FStefan+Djokic/FMfcgzGslkkkQrPwRgfrxvcJprjmXrQg
 builder.Services.AddRateLimiter(rateLimiterOptions =>

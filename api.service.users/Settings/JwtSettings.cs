@@ -1,10 +1,14 @@
+using Destructurama.Attributed;
+using Jubatus.Common.Settings;
+
 namespace Api.Service.Users.Settings;
 
-public record JwtSettings
+public record JwtSettings : IJwtSettings
 {
     /// <summary>
     /// 
     /// </summary>
+    [NotLogged]
     public string? JwtKey { get; init; }
 
     /// <summary>
@@ -40,10 +44,12 @@ public record JwtSettings
     /// <summary>
     /// 
     /// </summary>
+    [NotLogged]
     public string? AuthUser { get; init; }
 
     /// <summary>
     /// 
     /// </summary>
+    [NotLogged]
     public string? AuthPass { get; init; }
 }

@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Asp.Versioning;
 using Api.Service.Users.Dtos;
 using Api.Service.Users.Settings;
-using Jubatus.Common.Serilog;
+using Jubatus.Common;
 using Api.Service.Users.Models;
 
 namespace Api.Service.Users.Controllers;
@@ -44,7 +44,7 @@ public class AuthController : ControllerBase
     [Route(ApiEndPoints.CheckUsersAuth)]
     public async Task<ActionResult> AuthenticateAsync([FromBody] AuthUserDto authUser)
     {
-        using Serilog.Core.Logger log = Serilogger.GetLogger();
+        using Serilog.Core.Logger log = Logger.GetLogger(LoggerMinLevel.Debug);
 
         try
         {

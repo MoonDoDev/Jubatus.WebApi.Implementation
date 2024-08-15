@@ -6,6 +6,8 @@ using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using Jubatus.Common;
+using Api.Gateway.Users.Settings;
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
@@ -13,62 +15,11 @@ WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 
-builder.Services.AddSwaggerGen(c =>
-{
-    c.AddSecurityDefinition(ApiConsts.SecurityDefinitionName, new OpenApiSecurityScheme
-    {
-        Description = @"JMT Authorization header using the Bearer scheme. \r\n\r\n
-            Enter 'Bearer' [space] and then your token in the text input below. \r\n\r\n
-            Example: 'Bearer 12345abcdef'",
-        Name = "Authorization",
-        In = ParameterLocation.Header,
-        Type = SecuritySchemeType.ApiKey,
-        Scheme = ApiConsts.SecurityDefinitionName
-    });
+JwtSettings? jwtSettings = builder.Configuration.GetSection(nameof(JwtSettings)).Get<JwtSettings>();
+ArgumentNullException.ThrowIfNull(jwtSettings);
 
-    c.AddSecurityRequirement(new OpenApiSecurityRequirement()
-    {
-        {
-            new OpenApiSecurityScheme
-            {
-                Reference = new OpenApiReference
-                {
-                    Type = ReferenceType.SecurityScheme,
-                    Id = ApiConsts.SecurityDefinitionName
-                },
-                Scheme = "oauth2",
-                Name = ApiConsts.SecurityDefinitionName,
-                In = ParameterLocation.Header,
-            },
-            new List<string>()
-        }
-    });
-});
-
-// Getting JwtSettings from appsettigs.json
-IConfigurationSection settings = builder.Configuration.GetSection(ApiConsts.JwtSettings);
-
-// Adding JWT
-builder.Services.AddAuthentication(auth =>
-{
-    auth.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-    auth.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-}).AddJwtBearer(o =>
-{
-    byte[] Key = Encoding.UTF8.GetBytes(settings.GetValue<string>(ApiConsts.JwtKey)!);
-
-    o.SaveToken = true;
-    o.TokenValidationParameters = new TokenValidationParameters
-    {
-        ValidateIssuer = settings.GetValue<bool>(ApiConsts.ValidateIssuer),
-        ValidateAudience = settings.GetValue<bool>(ApiConsts.ValidateAudience),
-        ValidateLifetime = settings.GetValue<bool>(ApiConsts.ValidateLifetime),
-        ValidateIssuerSigningKey = settings.GetValue<bool>(ApiConsts.ValidateIssuerSigningKey),
-        ValidIssuer = settings.GetValue<string>(ApiConsts.JwtIssuer),
-        ValidAudience = settings.GetValue<string>(ApiConsts.JwtAudience),
-        IssuerSigningKey = new SymmetricSecurityKey(Key)
-    };
-});
+// Configuramos el Servicio para ejecutar las API's de forma segura con un BearerToken
+builder.Services.AddJwtAuthentication(jwtSettings);
 
 /// Requests Rate Limiter by Stefan Djokic → Email URL: https://mail.google.com/mail/u/0/?ogbl#label/Newsletter%2FStefan+Djokic/FMfcgzGslkkkQrPwRgfrxvcJprjmXrQg
 builder.Services.AddRateLimiter(rateLimiterOptions =>
