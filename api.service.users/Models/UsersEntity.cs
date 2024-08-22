@@ -1,9 +1,9 @@
 using Destructurama.Attributed;
-using Jubatus.Common;
+using Jubatus.WebApi.Extensions.Models;
 
 namespace Api.Service.Users.Models;
 
-public record UsersEntity : IEntity
+public record UsersEntity: IEntity
 {
     [NotLogged]
     public Guid Id { get; init; }
@@ -12,7 +12,7 @@ public record UsersEntity : IEntity
 
     public string? LastName { get; init; }
 
-    public string? Alias { get; init; }
+    public string? AliasName { get; init; }
 
     [NotLogged]
     public string? Password { get; init; }

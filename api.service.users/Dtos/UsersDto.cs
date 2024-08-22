@@ -1,32 +1,30 @@
+namespace Api.Service.Users.Dtos;
 using System.ComponentModel.DataAnnotations;
 using Destructurama.Attributed;
-using Jubatus.Common;
-
-namespace Api.Service.Users.Dtos;
+using Jubatus.WebApi.Extensions.Models;
 
 /// <summary>
 /// 
 /// </summary>
-public record AuthUserDto
+public record AuthUserDto: ICypherModel
 {
     [Required]
-    public string UserName { get; init; } = string.Empty;
-
+    public string AliasName { get; set; } = string.Empty;
     [Required]
     [NotLogged]
-    public string Password { get; init; } = string.Empty;
+    public string UserPass { get; set; } = string.Empty;
 }
 
 /// <summary>
 /// 
 /// </summary>
-public record UsersDto : IEntity
+public record UsersDto: IEntity
 {
     [NotLogged]
     public Guid Id { get; init; }
     public string? FirstName { get; init; }
     public string? LastName { get; init; }
-    public string? Alias { get; init; }
+    public string? AliasName { get; init; }
     [NotLogged]
     public string? Password { get; init; }
     public bool IsActive { get; init; }
@@ -35,43 +33,43 @@ public record UsersDto : IEntity
 /// <summary>
 /// 
 /// </summary>
-public record NewUsersDto
+public record NewUsersDto: ICypherModel
 {
-    [Required(ErrorMessage = ApiMessages.AliasIsRequired)]
-    [MinLength(8, ErrorMessage = ApiMessages.AliasMinSize)]
-    [MaxLength(16, ErrorMessage = ApiMessages.AliasMaxSize)]
-    public string? Alias { get; init; }
+    [Required( ErrorMessage = ApiMessages.UserNameIsRequired )]
+    [MinLength( 8, ErrorMessage = ApiMessages.UserNameMinSize )]
+    [MaxLength( 16, ErrorMessage = ApiMessages.UserNameMaxSize )]
+    public string AliasName { get; set; } = string.Empty;
 
-    public string? FirstName { get; init; }
-    public string? LastName { get; init; }
+    public string? FirstName { get; set; }
+    public string? LastName { get; set; }
 
     [NotLogged]
-    [Required(ErrorMessage = ApiMessages.PasswordIsRequired)]
-    [MinLength(8, ErrorMessage = ApiMessages.PasswordMinSize)]
-    [MaxLength(16, ErrorMessage = ApiMessages.PasswordMaxSize)]
-    public string? Password { get; init; }
+    [Required( ErrorMessage = ApiMessages.PasswordIsRequired )]
+    [MinLength( 8, ErrorMessage = ApiMessages.PasswordMinSize )]
+    [MaxLength( 16, ErrorMessage = ApiMessages.PasswordMaxSize )]
+    public string UserPass { get; set; } = string.Empty;
 
-    public bool IsActive { get; init; } = true;
+    public bool IsActive { get; set; } = true;
 }
 
 /// <summary>
 /// 
 /// </summary>
-public record UpdUsersDto
+public record UpdUsersDto: ICypherModel
 {
-    [Required(ErrorMessage = ApiMessages.AliasIsRequired)]
-    [MinLength(8, ErrorMessage = ApiMessages.AliasMinSize)]
-    [MaxLength(16, ErrorMessage = ApiMessages.AliasMaxSize)]
-    public string? Alias { get; init; }
+    [Required( ErrorMessage = ApiMessages.UserNameIsRequired )]
+    [MinLength( 8, ErrorMessage = ApiMessages.UserNameMinSize )]
+    [MaxLength( 16, ErrorMessage = ApiMessages.UserNameMaxSize )]
+    public string AliasName { get; set; } = string.Empty;
 
-    public string? FirstName { get; init; }
-    public string? LastName { get; init; }
+    public string? FirstName { get; set; }
+    public string? LastName { get; set; }
 
     [NotLogged]
-    [Required(ErrorMessage = ApiMessages.PasswordIsRequired)]
-    [MinLength(8, ErrorMessage = ApiMessages.PasswordMinSize)]
-    [MaxLength(16, ErrorMessage = ApiMessages.PasswordMaxSize)]
-    public string? Password { get; init; }
+    [Required( ErrorMessage = ApiMessages.PasswordIsRequired )]
+    [MinLength( 8, ErrorMessage = ApiMessages.PasswordMinSize )]
+    [MaxLength( 16, ErrorMessage = ApiMessages.PasswordMaxSize )]
+    public string UserPass { get; set; } = string.Empty;
 
-    public bool IsActive { get; init; } = true;
+    public bool IsActive { get; set; } = true;
 };

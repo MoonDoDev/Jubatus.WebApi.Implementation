@@ -1,34 +1,19 @@
-using System.IdentityModel.Tokens.Jwt;
+namespace Api.Service.Users.Controllers;
 using Microsoft.AspNetCore.Authorization;
-using System.Security.Claims;
-using System.Text;
-using Microsoft.IdentityModel.Tokens;
 using Microsoft.AspNetCore.Mvc;
 using Asp.Versioning;
 using Api.Service.Users.Dtos;
-using Api.Service.Users.Settings;
-using Jubatus.Common;
-using Api.Service.Users.Models;
-
-namespace Api.Service.Users.Controllers;
+using Jubatus.WebApi.Extensions;
 
 [Authorize]
 [ApiController]
-[ApiVersion(ApiVersions.AuthUserV1)]
-[Route(ApiEndPoints.AuthUsers)]
-public class AuthController : ControllerBase
+[ApiVersion( ApiVersions.AuthUserV1 )]
+[Route( ApiEndPoints.AuthUsers )]
+public class AuthController( IConfiguration configuration ): ControllerBase
 {
     #region private data
 
-    private readonly IConfiguration _configuration;
-
-    #endregion
-    #region constructor
-
-    public AuthController(IConfiguration configuration) => _configuration = configuration;
-
-    #endregion
-    #region private methods
+    private readonly IConfiguration _configuration = configuration;
 
     #endregion
     #region http methods
@@ -40,49 +25,18 @@ public class AuthController : ControllerBase
     /// <returns></returns>
     [AllowAnonymous]
     [HttpPost]
-    [MapToApiVersion(ApiVersions.AuthUserV1)]
-    [Route(ApiEndPoints.CheckUsersAuth)]
-    public async Task<ActionResult> AuthenticateAsync([FromBody] AuthUserDto authUser)
+    [MapToApiVersion( ApiVersions.AuthUserV1 )]
+    [Route( ApiEndPoints.CheckUsersAuth )]
+    public async Task<ActionResult> AuthenticateAsync( [FromBody] AuthUserDto authUser )
     {
-        using Serilog.Core.Logger log = Logger.GetLogger(LoggerMinLevel.Debug);
+        ArgumentNullException.ThrowIfNull( authUser );
 
-        try
-        {
-            JwtSettings? jwtSettings = _configuration.GetSection(nameof(JwtSettings)).Get<JwtSettings>();
-            ArgumentNullException.ThrowIfNull(jwtSettings);
+        var result = Toolbox.GenerateBearerToken( authUser, _configuration );
 
-            string authPassword = await authUser.Password.EncryptUserPassword(jwtSettings.JwtKey!);
+        if( result is null )
+            return await Task.FromResult( Unauthorized() ).ConfigureAwait( false );
 
-            if (jwtSettings.AuthUser == authUser.UserName && jwtSettings.AuthPass == authPassword)
-            {
-                log.Debug($"User <{authUser.UserName}> is trying to authenticate.");
-
-                var tokenHandle = new JwtSecurityTokenHandler();
-                byte[] tokenKey = Encoding.UTF8.GetBytes(jwtSettings.JwtKey!);
-
-                var tokenDescriptor = new SecurityTokenDescriptor
-                {
-                    Subject = new ClaimsIdentity(new Claim[]
-                    {
-                        new Claim(ClaimTypes.Name, authUser.UserName??"")
-                    }),
-                    Expires = DateTime.UtcNow.AddMinutes(10),
-                    SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(tokenKey), SecurityAlgorithms.HmacSha256Signature)
-                };
-
-                SecurityToken token = tokenHandle.CreateToken(tokenDescriptor);
-                return Ok(new TokensModel { Token = tokenHandle.WriteToken(token) });
-            }
-            else
-            {
-                return Unauthorized();
-            }
-        }
-        catch (System.Exception ex)
-        {
-            log.Error(ex, "Authenticate: Has thrown an exception: <{Excepcion}>.", ex);
-            return Unauthorized();
-        }
+        return await Task.FromResult( Ok( result ) ).ConfigureAwait( false );
     }
 
     #endregion
