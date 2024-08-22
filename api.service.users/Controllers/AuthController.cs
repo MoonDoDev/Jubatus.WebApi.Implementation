@@ -4,11 +4,13 @@ using Microsoft.AspNetCore.Mvc;
 using Asp.Versioning;
 using Api.Service.Users.Dtos;
 using Jubatus.WebApi.Extensions;
+using Microsoft.AspNetCore.RateLimiting;
 
 [Authorize]
 [ApiController]
 [ApiVersion( ApiVersions.AuthUserV1 )]
 [Route( ApiEndPoints.AuthUsers )]
+[EnableRateLimiting( "fixed" )]
 public class AuthController( IConfiguration configuration ): ControllerBase
 {
     #region private data

@@ -5,11 +5,13 @@ using Microsoft.AspNetCore.Mvc;
 using Api.Service.Users.Dtos;
 using Api.Service.Users.Models;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.RateLimiting;
 
 [Authorize]
 [ApiController]
 [ApiVersion( ApiVersions.UsersApiV1 )]
 [Route( ApiEndPoints.RootUsers )]
+[EnableRateLimiting( "fixed" )]
 public class UsersController: ControllerBase
 {
     private readonly IRepository<UsersEntity> _usersRepository;
