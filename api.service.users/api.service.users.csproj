@@ -7,4 +7,8 @@
         <UserSecretsId>510c8861-b3f5-41d3-83fe-6b7ecc8e0fc1</UserSecretsId>
     </PropertyGroup>
 
+    <ItemGroup>
+        <!-- <PackageReference Include="Jubatus.WebApi.Extensions" Version="1.2.31" /> -->
+    </ItemGroup>
+
 </Project>

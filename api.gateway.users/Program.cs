@@ -11,8 +11,24 @@ var webApiMgr = new WebApiConfig( builder )
     .AddBearerJwtExtensions()
     .AddFixedRateLimiter();
 
-/// Adicionamos el Servicio de Reverse Proxy Server (API Gateway)
-builder.Services.AddReverseProxy().LoadFromConfig( builder.Configuration.GetSection( ApiConsts.ReverseProxy ) );
+if( builder.Environment.IsDevelopment() )
+{
+    var config = new ConfigurationBuilder().AddUserSecrets<Program>().Build();
+
+    var log = Toolbox.GetLogger( LoggerMinLevel.Debug );
+    log.Debug( "Params(DEV): {0}", config.GetValue<string>( "ReverseProxy:Clusters:UsersCluster:Destinations:Destination1:Address" ) );
+
+    builder.Services.AddReverseProxy().LoadFromConfig( config.GetSection( ApiConsts.ReverseProxy ) );
+}
+else
+{
+    builder.Configuration.AddEnvironmentVariables();
+
+    var log = Toolbox.GetLogger( LoggerMinLevel.Debug );
+    log.Debug( "Params(PRO): {0}", builder.Configuration.GetValue<string>( "ReverseProxy:Clusters:UsersCluster:Destinations:Destination1:Address" ) );
+
+    builder.Services.AddReverseProxy().LoadFromConfig( builder.Configuration.GetSection( ApiConsts.ReverseProxy ) );
+}
 
 var app = webApiMgr.BuildWebApp( ApiEndPoints.HealthCheckGatewayLive );
 
@@ -25,5 +41,4 @@ if( app.Environment.IsDevelopment() )
 }
 
 app.MapReverseProxy();
-
 await app.RunAsync().ConfigureAwait( false );

@@ -22,7 +22,11 @@ services:
       - JwtSettings:JwtAudience=${JwtAudience}
       - JwtSettings:AuthUser=${AuthUser}
       - JwtSettings:AuthPass=${AuthPass}
-      - ReverseProxy:Clusters:users-cluster:Destinations:destination1:Address=http://users-api:7048/
+      - ReverseProxy:Clusters:UsersCluster:Destinations:Destination1:Address=http://users-api:7048/
+      - ReverseProxy:Routes:UsersRoute:ClusterId=${ReverseProxyClusterId}
+      - ReverseProxy:Routes:UsersRoute:Match:Path=${ReverseProxyPath}
+      - ReverseProxy:Routes:UsersRoute:RateLimiterPolicy=${ReverseProxyRateLimiterPolicy}
+      - ReverseProxy:Routes:UsersRoute:Transforms:0:PathPattern=${ReverseProxyPathPattern}
   users-api:
     image: users.service:v2
     ports:
@@ -31,8 +35,11 @@ services:
       - monguito-db
     environment:
       - MongoDbSettings:Host=monguito-db
+      - MongoDbSettings:Port=${Port}
       - MongoDbSettings:UserName=${UserName}
       - MongoDbSettings:UserPass=${UserPass}
+      - MongoDbSettings:ServiceName=${ServiceName}
+      - MongoDbSettings:CollectionName=${CollectionName}
       - JwtSettings:ValidateLifetime=${ValidateLifetime}
       - JwtSettings:ValidateIssuerSigningKey=${ValidateIssuerSigningKey}
       - JwtSettings:ValidateIssuer=${ValidateIssuer}
@@ -42,7 +49,6 @@ services:
       - JwtSettings:JwtAudience=${JwtAudience}
       - JwtSettings:AuthUser=${AuthUser}
       - JwtSettings:AuthPass=${AuthPass}
-      - ServiceSettings:ServiceName=UsersMicroService
       - ASPNETCORE_HTTP_PORTS=7048
   monguito-db:
     image: mongo
