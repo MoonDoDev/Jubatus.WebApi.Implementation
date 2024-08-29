@@ -6,14 +6,14 @@ Este es un proyecto de ejemplo que implementa una WebApi en .NET 8, el cual perm
 
 ```
   Jubatus.WebApi.Implementation \
-  | api.gateway.users \             // Proyecto WebApi que implementa ReverseProxy como Gateway.
+  | api.gateway.users \             // WebApi que implementa ReverseProxy como Gateway.
     | api.gateway.users.csproj      // Archivo para el manejo del proyecto.
     | api.gateway.users.http        // Archivo http para probar los end-points.
     | appsettings.Development.json  // Archivo de configuración para Desarrollo.
     | appsettings.json              // Archivo de configuración para Producción.
     | Constants.cs                  // Definición de constantes para el proyecto.
     | Program.cs                    // Módulo principal con la definición de la WebApi.
-  | api.service.users \             // Proyecto WebApi que implementa el CRUD de Usuarios.
+  | api.service.users \             // WebApi que implementa el CRUD de Usuarios.
     | Controllers \
       | AuthController.cs           // Controller con el end-point para la autenticación JWT.
       | UsersController.cs          // Controller con los end-points para el CRUD.
@@ -30,10 +30,10 @@ Este es un proyecto de ejemplo que implementa una WebApi en .NET 8, el cual perm
     | Exceptions.cs                 // Definición de excepciones para el proyecto.
     | Extensions.cs                 // Definición de extensiones para Usuarios.
     | Program.cs                    // Módulo principal con la definición de la WebApi.
-  | allprojects.sln                 // Archivo para manejar todos los proyectos de la solución.
-  | compose.yaml                    // Archivo para el despliegue del proyecto con Docker.
-  | dockerfile.gateway              // Archivo Docker para construir la imagen de Api Gateway.
-  | dockerfile.service              // Archivo Docker para construir la imagen de Api Usuarios.
+  | allprojects.sln                 // Archivo para manejar los proyectos de la solución.
+  | compose.yaml                    // Archivo para desplegar la solución con Docker.
+  | dockerfile.gateway              // Archivo Docker para construir la imagen Api Gateway.
+  | dockerfile.service              // Archivo Docker para construir la imagen Api Usuarios.
   | gateway.sln                     // Archivo para compilar el proyecto de Api Gateway.
   | LICENSE                         // Licencia tipo MIT para el uso del proyecto.
   | README.Docker.md                // Documentación útil para el uso de Docker.
@@ -62,13 +62,36 @@ Este es un proyecto de ejemplo que implementa una WebApi en .NET 8, el cual perm
 - [x] La solución está diseñada para que se creen dos contenedores, uno el que corresponde al Api Gateway y el segundo, correspondiente al Api de Usuarios. Esto se logra ejecutando el siguiente comando:
 
 ```
-docker build -f dockerfile.gateway -t users.gateway:latest .
-docker build -f dockerfile.service -t users.service:latest .
+docker build -f dockerfile.gateway -t users.gateway:v2 .
+docker build -f dockerfile.service -t users.service:v2 .
 ```
 
 > [!IMPORTANT]
+> - [x]  Para trabajar con Docker, se requiere tener instalado y configurado en la máquina el Docker Desktop.
 > - [x]  El archivo `dockerfile.gateway` requiere del archivo `gateway.sln` para compilar y generar la imagen del Api Gateway.
 > - [x]  El archivo `dockerfile.service` requiere del archivo `service.sln` para compilar y generar la imagen del Api de Usuarios. 
+
+- [x]  Para realizar el despliegue de la solución se requieren las siguientes variables de entorno:
+
+```
+UserName                       // Usuario de conexión a la BD de MongoDB.
+UserName                       // Contraseña de conexión a la BD de MongoDB.
+ServiceName                    // Nombre del Servicio/Repositorio en MongoDB.
+CollectionName                 // Nombre de la colección en MongoDB.
+JwtKey                         // Llave base para el manejo del JWT.
+JwtIssuer                      // Emisor del JWT.
+JwtAudience                    // Audiencia para la cual está destinado en JWT.
+ValidateIssuer                 // Se debe validar el Emisor? (true/false).
+ValidateAudience               // Se debe validar la Audiencia? (true/false).
+ValidateLifetime               // Se debe validar la vigencia del JWT? (true/false).
+ValidateIssuerSigningKey       // Validar la firma del Emisor? (true/false).
+AuthUser                       // Usuario autorizado para solicitar JWT.
+AuthPass                       // Contraseña (cifrada) del usuario autorizado para solicitar JWT.
+ReverseProxyClusterId          // Id del Cluster habilitado para el enrutamiento - Ej: "UsersCluster".
+ReverseProxyPath               // Ruta para el enrutamiento - Ej: "/users-service/{**catch-all}".
+ReverseProxyRateLimiterPolicy  // Política para el RateLimiter del ReverseProxy - Ej: "fixed".
+ReverseProxyPathPattern        // Patrón de enrutamiento - Ej: "{**catch-all}".
+```
 
 - [x]  Para crear las instancias de los contenedores y realizar el despliegue de la funcionalidad con Docker, debemos ejecutar el siguiente comando:
 
@@ -77,7 +100,9 @@ docker compose up -d
 ```
 
 > [!IMPORTANT]
-> Al crear el despliegue, ejecutando el comando anterior, se descarga (en caso de no tenerla) una imagen Docker de MongoDB, para poder crear y configurar localmente un repositorio de dicha BD.
+> Para realizar el despliegue con Docker, es requerido el archivo `compose.yaml` y tener instalado y configurado en la máquina el Docker Desktop.
+> Para el despliegue exitoso de la solución, se sugiere tener creado y vinculado al proyecto el archivo "*.env*", para extraer de allí las variables de entorno que se están mapeando en el archivo `compose.yaml`.
+> Al momento del despliegue, ejecutando el comando anterior, se descarga (si no se tiene) de DockerHub la imagen correspondiente a MongoDB, para crear y configurar localmente un repositorio de dicha BD.
 
 - [x]  Para eliminar las instancias de los contenedores, debemos ejecutar el siguiente comando:
 

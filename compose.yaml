@@ -22,7 +22,7 @@ services:
       - JwtSettings:JwtAudience=${JwtAudience}
       - JwtSettings:AuthUser=${AuthUser}
       - JwtSettings:AuthPass=${AuthPass}
-      - ReverseProxy:Clusters:UsersCluster:Destinations:Destination1:Address=http://users-api:7048/
+      - ReverseProxy:Clusters:${ReverseProxyClusterId}:Destinations:Destination1:Address=http://users-api:7048/
       - ReverseProxy:Routes:UsersRoute:ClusterId=${ReverseProxyClusterId}
       - ReverseProxy:Routes:UsersRoute:Match:Path=${ReverseProxyPath}
       - ReverseProxy:Routes:UsersRoute:RateLimiterPolicy=${ReverseProxyRateLimiterPolicy}
@@ -35,7 +35,7 @@ services:
       - monguito-db
     environment:
       - MongoDbSettings:Host=monguito-db
-      - MongoDbSettings:Port=${Port}
+      - MongoDbSettings:Port=27017
       - MongoDbSettings:UserName=${UserName}
       - MongoDbSettings:UserPass=${UserPass}
       - MongoDbSettings:ServiceName=${ServiceName}
