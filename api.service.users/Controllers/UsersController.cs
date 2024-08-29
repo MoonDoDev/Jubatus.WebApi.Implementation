@@ -6,28 +6,24 @@ using Api.Service.Users.Dtos;
 using Api.Service.Users.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.RateLimiting;
+using Microsoft.AspNetCore.Http.HttpResults;
 
+
+/// <summary>
+/// 
+/// </summary>
+/// <param name="usersRepository"></param>
+/// <param name="configuration"></param>
 [Authorize]
 [ApiController]
 [ApiVersion( ApiVersions.UsersApiV1 )]
 [Route( ApiEndPoints.RootUsers )]
 [EnableRateLimiting( "fixed" )]
-public class UsersController: ControllerBase
+public class UsersController( IRepository<UsersEntity> usersRepository, IConfiguration configuration ): ControllerBase
 {
-    private readonly IRepository<UsersEntity> _usersRepository;
+    private readonly IRepository<UsersEntity> _usersRepository = usersRepository;
 
-    private readonly IConfiguration _configuration;
-
-    /// <summary>
-    /// 
-    /// </summary>
-    /// <param name="usersRepository"></param>
-    /// <param name="configuration"></param>
-    public UsersController( IRepository<UsersEntity> usersRepository, IConfiguration configuration )
-    {
-        _usersRepository = usersRepository;
-        _configuration = configuration;
-    }
+    private readonly IConfiguration _configuration = configuration;
 
     /// <summary>
     /// 
@@ -138,6 +134,6 @@ public class UsersController: ControllerBase
     public async Task<IActionResult> DeleteRecordAsync( [FromQuery] Guid id )
     {
         var result = await _usersRepository.RemoveAsync( id ).ConfigureAwait( false );
-        return result.IsSuccess ? Ok() : NotFound();
+        return result.IsSuccess ? NoContent() : NotFound();
     }
 }
