@@ -27,7 +27,6 @@ Este es un proyecto de ejemplo que implementa una WebApi en .NET 8, el cual perm
     | appsettings.Development.json  // Archivo de configuración para Desarrollo.
     | appsettings.json              // Archivo de configuración para Producción.
     | Constants.cs                  // Definición de constantes para el proyecto.
-    | Exceptions.cs                 // Definición de excepciones para el proyecto.
     | Extensions.cs                 // Definición de extensiones para Usuarios.
     | Program.cs                    // Módulo principal con la definición de la WebApi.
   | allprojects.sln                 // Archivo para manejar los proyectos de la solución.
@@ -54,19 +53,23 @@ Este es un proyecto de ejemplo que implementa una WebApi en .NET 8, el cual perm
 - [x]  En los controladores y los end-points del WebApi de Usuarios, se implementa el [**manejo de versiones**](https://weblogs.asp.net/ricardoperes/asp-net-core-api-versioning), para facilitar una transición sin traumas hacia las futuras versiones de la WebApi.
 - [x]  En el WebApi de Usuarios se está implementando [**RateLimiter**](https://learn.microsoft.com/en-us/dotnet/api/system.threading.ratelimiting.ratelimiter?view=aspnetcore-8.0) tipo "*fixed*", para evitar la sobrecarga y el abuso en el consumo del Servicio.
 - [x]  En los DTOs y Modelos se implementa [**DataValidation**](https://learn.microsoft.com/en-us/aspnet/mvc/overview/older-versions-1/models-data/validation-with-the-data-annotation-validators-cs) para minimizar los riesgos de inconsistencias en los datos ingresados por el consumidor.
-- [x]  Igualmente en los DTOs y los Modelos se está utilizando el atributo `[NotLogged]` para evitar exponer información sensible cuando se utilicen herramientas de "*Logging*" como el [**SeriLog**](https://serilog.net/).
 - [x]  Para el manejo de las configuraciones del proyecto, se están utilizando directamente las clases expuestas por el paquete `Jubatus.WebApi.Extensions`. y localmente al proyecto, se están trabajando con [**user-secrets**](https://learn.microsoft.com/en-us/aspnet/core/security/app-secrets?view=aspnetcore-8.0&tabs=linux) para Desarrollo y con variables de entorno a través de Contenedores de Docker para Producción.
 - [x]  Para la persistencia de los datos se está utilizando un repositorio de MongoDB, configurado a través de las extensiones expuestas por el paquete `Jubatus.WebApi.Extensions`.
+- [x]  A través del paquete `Jubatus.WebApi.Extensions` se está implementando en el proyecto el manejo global de la excepciones con `IExceptionHandler`.
 - [x]  Para facilitar el despliegue de la funcionallidad en cualquiera de los proveedores de Nube, las Apis se contenerizan con Docker.
 - [x]  La contenerización de la solución, permite que la funcionalidad se pueda escalar eventualmente de forma horizontal, de manera que se pueda alterar el número de las instancias del contenedor, según como lo requiera la demanda del momento. (esto requiere de componentes de orquestación como el Kubernetes).
-- [x] La solución está diseñada para que se creen dos contenedores, uno el que corresponde al Api Gateway y el segundo, correspondiente al Api de Usuarios. Esto se logra ejecutando el siguiente comando:
+- [x]  La solución está diseñada para que se creen dos contenedores, uno el que corresponde al Api Gateway y el segundo, correspondiente al Api de Usuarios. Esto se logra ejecutando el siguiente comando:
 
 ```
 docker build -f dockerfile.gateway -t users.gateway:v2 .
 docker build -f dockerfile.service -t users.service:v2 .
 ```
 
+- [x]  Caraterísticas implementadas en el proyecto con la ayuda del paquete `Jubatus.WebApi.Extensions`: **Reposity Pattern**, **Generics**, **Dependency Injection**, **Options Pattern**, **Extensions**, **Result Pattern**.
+- [x]  Próximamente se estará incluyendo: Implementación de **Timeout Policy** con Polly, reintentos con **Exponential Backoff**, y **Circuit Breaker Pattern**.
+
 > [!IMPORTANT]
+> 
 > - [x]  Para trabajar con Docker, se requiere tener instalado y configurado en la máquina el Docker Desktop.
 > - [x]  El archivo `dockerfile.gateway` requiere del archivo `gateway.sln` para compilar y generar la imagen del Api Gateway.
 > - [x]  El archivo `dockerfile.service` requiere del archivo `service.sln` para compilar y generar la imagen del Api de Usuarios. 
@@ -75,7 +78,7 @@ docker build -f dockerfile.service -t users.service:v2 .
 
 ```
 UserName                       // Usuario de conexión a la BD de MongoDB.
-UserName                       // Contraseña de conexión a la BD de MongoDB.
+UserPass                       // Contraseña de conexión a la BD de MongoDB.
 ServiceName                    // Nombre del Servicio/Repositorio en MongoDB.
 CollectionName                 // Nombre de la colección en MongoDB.
 JwtKey                         // Llave base para el manejo del JWT.
@@ -100,9 +103,11 @@ docker compose up -d
 ```
 
 > [!IMPORTANT]
+> 
 > Para realizar el despliegue con Docker, es requerido el archivo `compose.yaml` y tener instalado y configurado en la máquina el Docker Desktop.
 > Para el despliegue exitoso de la solución, se sugiere tener creado y vinculado al proyecto el archivo "*.env*", para extraer de allí las variables de entorno que se están mapeando en el archivo `compose.yaml`.
 > Al momento del despliegue, ejecutando el comando anterior, se descarga (si no se tiene) de DockerHub la imagen correspondiente a MongoDB, para crear y configurar localmente un repositorio de dicha BD.
+> 
 
 - [x]  Para eliminar las instancias de los contenedores, debemos ejecutar el siguiente comando:
 
@@ -126,13 +131,20 @@ docker compose down
 "Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.8"
 "Microsoft.AspNetCore.OpenApi" Version="8.0.4"
 "Swashbuckle.AspNetCore" Version="6.7.0"
-"Destructurama.Attributed" Version="4.0.0"
-"Jubatus.WebApi.Extensions" Version="1.2.31"
+"Jubatus.WebApi.Extensions" Version="1.3.37"
 "SonarAnalyzer.CSharp" Version="9.32.0.97167"
 ```
 
+> [!NOTE]
+>
+> **Disclaimer:**
+> 
+> - [x]  En este proyecto se está utilizando un solo repositorio, pero solo para facilitar la demostración, por lo que el deber ser, sería utilizar un repositorio por Servicio, y así facilitar y agilizar el manejo de los cambios en cada uno de ellos y su posterior despliegue en ambientes Productivos.
+> - [x]  Este es un proyecto con propósitos demostrativos y algunas de las implementaciones son básicas, como lo son el manejo de la Auténticación y Autorización de Usuarios con JWT, la implementación del RateLimiter, entre otros.
+>
+
 ---------
 
-[**YouTube**](https://www.youtube.com/@hectorgomez-backend-dev/featured) -- 
-[**LinkedIn**](https://www.linkedin.com/in/hectorgomez-backend-dev/) -- 
+[**YouTube**](https://www.youtube.com/@hectorgomez-backend-dev/featured) - 
+[**LinkedIn**](https://www.linkedin.com/in/hectorgomez-backend-dev/) - 
 [**GitHub**](https://github.com/MoonDoDev/Jubatus.WebApi.Implementation)
