@@ -1,4 +1,5 @@
 namespace Api.Service.Users;
+
 using Api.Service.Users.Dtos;
 using Api.Service.Users.Models;
 
@@ -22,7 +23,7 @@ public static class UsersExtensions
             FirstName = usersEntity.FirstName!,
             LastName = usersEntity.LastName!,
             AliasName = usersEntity.AliasName!,
-            Password = usersEntity.Password!,
+            UserPass = usersEntity.UserPass!,
             IsActive = usersEntity.IsActive
         };
     }

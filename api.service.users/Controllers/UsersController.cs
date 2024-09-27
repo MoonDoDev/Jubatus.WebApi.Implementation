@@ -1,4 +1,5 @@
 namespace Api.Service.Users.Controllers;
+
 using Asp.Versioning;
 using Jubatus.WebApi.Extensions;
 using Microsoft.AspNetCore.Mvc;
@@ -6,23 +7,25 @@ using Api.Service.Users.Dtos;
 using Api.Service.Users.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.RateLimiting;
-using Microsoft.AspNetCore.Http.HttpResults;
-
 
 /// <summary>
 /// 
 /// </summary>
 /// <param name="usersRepository"></param>
+/// <param name="logger"></param>
 /// <param name="configuration"></param>
 [Authorize]
 [ApiController]
 [ApiVersion( ApiVersions.UsersApiV1 )]
 [Route( ApiEndPoints.RootUsers )]
 [EnableRateLimiting( "fixed" )]
-public class UsersController( IRepository<UsersEntity> usersRepository, IConfiguration configuration ): ControllerBase
+public class UsersController(
+    IRepository<UsersEntity> usersRepository,
+    ILogger<UsersController> logger,
+    IConfiguration configuration ): ControllerBase
 {
     private readonly IRepository<UsersEntity> _usersRepository = usersRepository;
-
+    private readonly ILogger<UsersController> _logger = logger;
     private readonly IConfiguration _configuration = configuration;
 
     /// <summary>
@@ -51,6 +54,8 @@ public class UsersController( IRepository<UsersEntity> usersRepository, IConfigu
     [Route( ApiEndPoints.UserGetOneRecs )]
     public async Task<IActionResult> GetOneRecordAsync( [FromQuery] Guid id )
     {
+        FastLogger.LogDebug( _logger, $"GettingOneRecord with id: {id}", null );
+
         var result = await _usersRepository.GetAsync( id ).ConfigureAwait( false );
         return result.IsSuccess ? Ok( result.Value.AsUsersDto() ) : NotFound();
     }
@@ -66,6 +71,7 @@ public class UsersController( IRepository<UsersEntity> usersRepository, IConfigu
     public async Task<IActionResult> CreateRecordAsync( [FromBody] NewUsersDto item )
     {
         ArgumentNullException.ThrowIfNull( item );
+        FastLogger.LogDebug( _logger, $"CreatingRecord with alias: {item.AliasName}", null );
 
         if( !ModelState.IsValid )
         {
@@ -78,7 +84,7 @@ public class UsersController( IRepository<UsersEntity> usersRepository, IConfigu
             AliasName = item.AliasName,
             FirstName = item.FirstName,
             LastName = item.LastName,
-            Password = item.EncryptUserPassword( _configuration ),
+            UserPass = item.EncryptUserPassword( _configuration ),
             IsActive = item.IsActive
         };
 
@@ -97,6 +103,7 @@ public class UsersController( IRepository<UsersEntity> usersRepository, IConfigu
     public async Task<IActionResult> UpdateRecordAsync( [FromQuery] Guid id, [FromBody] UpdUsersDto item )
     {
         ArgumentNullException.ThrowIfNull( item );
+        FastLogger.LogDebug( _logger, $"UpdatingRecord with id: {id}", null );
 
         if( !ModelState.IsValid )
         {
@@ -115,7 +122,7 @@ public class UsersController( IRepository<UsersEntity> usersRepository, IConfigu
             AliasName = item.AliasName,
             FirstName = item.FirstName,
             LastName = item.LastName,
-            Password = item.EncryptUserPassword( _configuration ),
+            UserPass = item.EncryptUserPassword( _configuration ),
             IsActive = item.IsActive
         };
 
@@ -133,6 +140,8 @@ public class UsersController( IRepository<UsersEntity> usersRepository, IConfigu
     [Route( ApiEndPoints.UserDeleteRecs )]
     public async Task<IActionResult> DeleteRecordAsync( [FromQuery] Guid id )
     {
+        FastLogger.LogDebug( _logger, $"DeletingRecord with id: {id}", null );
+
         var result = await _usersRepository.RemoveAsync( id ).ConfigureAwait( false );
         return result.IsSuccess ? NoContent() : NotFound();
     }

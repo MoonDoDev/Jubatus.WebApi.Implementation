@@ -11,12 +11,18 @@ var webApiMgr = new WebApiConfig( builder )
     .AddBearerJwtExtensions()
     .AddFixedRateLimiter();
 
+using var loggerFactory = LoggerFactory.Create( loggingBuilder => loggingBuilder
+    .SetMinimumLevel( LogLevel.Trace )
+    .AddConsole() );
+
+var logger = loggerFactory.CreateLogger<Program>();
+
 if( builder.Environment.IsDevelopment() )
 {
     var config = new ConfigurationBuilder().AddUserSecrets<Program>().Build();
 
-    var log = Toolbox.GetLogger( LoggerMinLevel.Debug );
-    log.Debug( "Params(DEV): {0}", config.GetValue<string>( "ReverseProxy:Clusters:UsersCluster:Destinations:Destination1:Address" ) );
+    FastLogger.LogDebug( logger, string.Format( "Params(DEV): {0}", config.GetValue<string>(
+        "ReverseProxy:Clusters:UsersCluster:Destinations:Destination1:Address" ) ), null );
 
     builder.Services.AddReverseProxy().LoadFromConfig( config.GetSection( ApiConsts.ReverseProxy ) );
 }
@@ -24,8 +30,8 @@ else
 {
     builder.Configuration.AddEnvironmentVariables();
 
-    var log = Toolbox.GetLogger( LoggerMinLevel.Debug );
-    log.Debug( "Params(PRO): {0}", builder.Configuration.GetValue<string>( "ReverseProxy:Clusters:UsersCluster:Destinations:Destination1:Address" ) );
+    FastLogger.LogDebug( logger, string.Format( "Params(PRO): {0}", builder.Configuration.GetValue<string>(
+        "ReverseProxy:Clusters:UsersCluster:Destinations:Destination1:Address" ) ), null );
 
     builder.Services.AddReverseProxy().LoadFromConfig( builder.Configuration.GetSection( ApiConsts.ReverseProxy ) );
 }

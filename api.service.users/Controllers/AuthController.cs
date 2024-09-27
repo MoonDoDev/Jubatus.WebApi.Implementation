@@ -1,4 +1,5 @@
 namespace Api.Service.Users.Controllers;
+
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Asp.Versioning;
@@ -11,10 +12,13 @@ using Microsoft.AspNetCore.RateLimiting;
 [ApiVersion( ApiVersions.AuthUserV1 )]
 [Route( ApiEndPoints.AuthUsers )]
 [EnableRateLimiting( "fixed" )]
-public class AuthController( IConfiguration configuration ): ControllerBase
+public class AuthController(
+    ILogger<AuthController> logger,
+    IConfiguration configuration ): ControllerBase
 {
     #region private data
 
+    private readonly ILogger<AuthController> _logger = logger;
     private readonly IConfiguration _configuration = configuration;
 
     #endregion
@@ -33,6 +37,7 @@ public class AuthController( IConfiguration configuration ): ControllerBase
     {
         ArgumentNullException.ThrowIfNull( authUser );
 
+        FastLogger.LogDebug( _logger, $"The user: {authUser.AliasName} is trying to authenticate.", null );
         var result = Toolbox.GenerateBearerToken( authUser, _configuration );
 
         if( result is null )

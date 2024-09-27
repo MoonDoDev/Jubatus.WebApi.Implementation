@@ -17,8 +17,7 @@
         <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.8" />
         <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="8.0.4" />
         <PackageReference Include="Swashbuckle.AspNetCore" Version="6.7.0" />
-        <PackageReference Include="Destructurama.Attributed" Version="4.0.0" />
-        <PackageReference Include="Jubatus.WebApi.Extensions" Version="1.2.31" />
+        <PackageReference Include="Jubatus.WebApi.Extensions" Version="1.3.37" />
         <PackageReference Include="SonarAnalyzer.CSharp" Version="9.32.0.97167">
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
             <PrivateAssets>all</PrivateAssets>

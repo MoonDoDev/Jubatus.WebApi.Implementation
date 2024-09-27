@@ -1,6 +1,6 @@
 namespace Api.Service.Users.Dtos;
+
 using System.ComponentModel.DataAnnotations;
-using Destructurama.Attributed;
 using Jubatus.WebApi.Extensions.Models;
 
 /// <summary>
@@ -11,7 +11,6 @@ public record AuthUserDto: ICypherModel
     [Required]
     public string AliasName { get; set; } = string.Empty;
     [Required]
-    [NotLogged]
     public string UserPass { get; set; } = string.Empty;
 }
 
@@ -20,13 +19,11 @@ public record AuthUserDto: ICypherModel
 /// </summary>
 public record UsersDto: IEntity
 {
-    [NotLogged]
     public Guid Id { get; init; }
     public string? FirstName { get; init; }
     public string? LastName { get; init; }
     public string? AliasName { get; init; }
-    [NotLogged]
-    public string? Password { get; init; }
+    public string? UserPass { get; init; }
     public bool IsActive { get; init; }
 }
 
@@ -43,7 +40,6 @@ public record NewUsersDto: ICypherModel
     public string? FirstName { get; set; }
     public string? LastName { get; set; }
 
-    [NotLogged]
     [Required( ErrorMessage = ApiMessages.PasswordIsRequired )]
     [MinLength( 8, ErrorMessage = ApiMessages.PasswordMinSize )]
     [MaxLength( 16, ErrorMessage = ApiMessages.PasswordMaxSize )]
@@ -65,7 +61,6 @@ public record UpdUsersDto: ICypherModel
     public string? FirstName { get; set; }
     public string? LastName { get; set; }
 
-    [NotLogged]
     [Required( ErrorMessage = ApiMessages.PasswordIsRequired )]
     [MinLength( 8, ErrorMessage = ApiMessages.PasswordMinSize )]
     [MaxLength( 16, ErrorMessage = ApiMessages.PasswordMaxSize )]
