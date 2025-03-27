@@ -1,5 +1,3 @@
-namespace Api.Service.Users.Controllers;
-
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Asp.Versioning;
@@ -7,12 +5,19 @@ using Api.Service.Users.Dtos;
 using Jubatus.WebApi.Extensions;
 using Microsoft.AspNetCore.RateLimiting;
 
+namespace Api.Service.Users.Controllers;
+
+/// <summary>
+/// 
+/// </summary>
+/// <param name="logger"></param>
+/// <param name="configuration"></param>
 [Authorize]
 [ApiController]
 [ApiVersion( ApiVersions.AuthUserV1 )]
 [Route( ApiEndPoints.AuthUsers )]
 [EnableRateLimiting( "fixed" )]
-public class AuthController(
+public sealed class AuthController(
     ILogger<AuthController> logger,
     IConfiguration configuration ): ControllerBase
 {

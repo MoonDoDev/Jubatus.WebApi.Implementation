@@ -1,5 +1,3 @@
-namespace Api.Service.Users.Controllers;
-
 using Asp.Versioning;
 using Jubatus.WebApi.Extensions;
 using Microsoft.AspNetCore.Mvc;
@@ -7,6 +5,8 @@ using Api.Service.Users.Dtos;
 using Api.Service.Users.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.RateLimiting;
+
+namespace Api.Service.Users.Controllers;
 
 /// <summary>
 /// 
@@ -19,7 +19,7 @@ using Microsoft.AspNetCore.RateLimiting;
 [ApiVersion( ApiVersions.UsersApiV1 )]
 [Route( ApiEndPoints.RootUsers )]
 [EnableRateLimiting( "fixed" )]
-public class UsersController(
+public sealed class UsersController(
     IRepository<UsersEntity> usersRepository,
     ILogger<UsersController> logger,
     IConfiguration configuration ): ControllerBase
@@ -38,7 +38,7 @@ public class UsersController(
     public async IAsyncEnumerable<UsersDto> GetAllRecordsAsync()
     {
         var records = _usersRepository.GetAllAsync();
-        await foreach( var record in records )
+        await foreach( var record in records.ConfigureAwait( false ) )
         {
             yield return record.AsUsersDto();
         }

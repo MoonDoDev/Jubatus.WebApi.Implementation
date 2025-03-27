@@ -14,10 +14,12 @@ var webApiMgr = new WebApiConfig( builder )
     .AddFixedRateLimiter()
     .AddUrlAndHeaderApiVersioning();
 
-var app = webApiMgr.BuildWebApp( ApiEndPoints.HealthCheckUsersLive, ApiEndPoints.HealthCheckUsersReady );
+var app = webApiMgr.BuildWebApp(
+    ApiEndPoints.HealthCheckUsersLive,
+    ApiEndPoints.HealthCheckUsersReady );
 
 // Configure the HTTP request pipeline.
-if( app.Environment.IsDevelopment() )
+if ( app.Environment.IsDevelopment() )
 {
     app.UseSwagger();
     app.UseSwaggerUI();

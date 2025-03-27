@@ -1,8 +1,8 @@
-namespace Api.Service.Users.Models;
-
 using Jubatus.WebApi.Extensions.Models;
 
-public record UsersEntity: IEntity
+namespace Api.Service.Users.Models;
+
+public sealed record UsersEntity: IEntity
 {
     public Guid Id { get; init; }
 

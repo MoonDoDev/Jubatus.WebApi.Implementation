@@ -1,6 +1,6 @@
 namespace Api.Service.Users;
 
-public static class ApiEndPoints
+internal static class ApiEndPoints
 {
     public const string HealthCheckUsersReady = "api/v{v:apiVersion}/users/health/ready";
     public const string HealthCheckUsersLive = "api/v{v:apiVersion}/users/health/live";
@@ -14,7 +14,7 @@ public static class ApiEndPoints
     public const string CheckUsersAuth = "check";
 }
 
-public static class ApiMessages
+internal static class ApiMessages
 {
     public const string PasswordIsRequired = "El campo 'Password' es requerido";
     public const string UserNameIsRequired = "El campo 'UserName' es requerido";
@@ -24,7 +24,7 @@ public static class ApiMessages
     public const string PasswordMaxSize = "La longitud máxima para el 'Password' es de 16";
 }
 
-public static class ApiVersions
+internal static class ApiVersions
 {
     public const double UsersApiV1 = 1.0;
     public const double AuthUserV1 = 1.0;

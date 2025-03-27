@@ -3,7 +3,7 @@ namespace Api.Gateway.Users;
 /// <summary>
 /// 
 /// </summary>
-public static class ApiEndPoints
+internal static class ApiEndPoints
 {
     public const string HealthCheckGatewayLive = "api/gateway/health/live";
 }
@@ -11,7 +11,7 @@ public static class ApiEndPoints
 /// <summary>
 /// 
 /// </summary>
-public static class ApiConsts
+internal static class ApiConsts
 {
     public const string ReverseProxy = "ReverseProxy";
 }

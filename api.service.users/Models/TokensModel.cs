@@ -1,6 +1,6 @@
 namespace Api.Service.Users.Models;
 
-public record TokensModel
+internal sealed record TokensModel
 {
     /// <summary>
     /// 

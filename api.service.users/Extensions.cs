@@ -1,12 +1,12 @@
-namespace Api.Service.Users;
-
 using Api.Service.Users.Dtos;
 using Api.Service.Users.Models;
+
+namespace Api.Service.Users;
 
 /// <summary>
 /// 
 /// </summary>
-public static class UsersExtensions
+internal static class UsersExtensions
 {
     /// <summary>
     /// 

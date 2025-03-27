@@ -1,12 +1,12 @@
-namespace Api.Service.Users.Dtos;
-
 using System.ComponentModel.DataAnnotations;
 using Jubatus.WebApi.Extensions.Models;
+
+namespace Api.Service.Users.Dtos;
 
 /// <summary>
 /// 
 /// </summary>
-public record AuthUserDto: ICypherModel
+public sealed record AuthUserDto: ICypherModel
 {
     [Required]
     public string AliasName { get; set; } = string.Empty;
@@ -17,7 +17,7 @@ public record AuthUserDto: ICypherModel
 /// <summary>
 /// 
 /// </summary>
-public record UsersDto: IEntity
+public sealed record UsersDto: IEntity
 {
     public Guid Id { get; init; }
     public string? FirstName { get; init; }
@@ -30,7 +30,7 @@ public record UsersDto: IEntity
 /// <summary>
 /// 
 /// </summary>
-public record NewUsersDto: ICypherModel
+public sealed record NewUsersDto: ICypherModel
 {
     [Required( ErrorMessage = ApiMessages.UserNameIsRequired )]
     [MinLength( 8, ErrorMessage = ApiMessages.UserNameMinSize )]
@@ -51,7 +51,7 @@ public record NewUsersDto: ICypherModel
 /// <summary>
 /// 
 /// </summary>
-public record UpdUsersDto: ICypherModel
+public sealed record UpdUsersDto: ICypherModel
 {
     [Required( ErrorMessage = ApiMessages.UserNameIsRequired )]
     [MinLength( 8, ErrorMessage = ApiMessages.UserNameMinSize )]
