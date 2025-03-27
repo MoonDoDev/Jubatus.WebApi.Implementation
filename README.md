@@ -2,7 +2,7 @@
 
 ## Descripción General
 
-Este es un proyecto de ejemplo que implementa una WebApi en .NET 8, el cual permite ejecutar un CRUD de Usuarios sobre una colección de [**MongoDB**](https://www.mongodb.com), y para su construcción nos estamos apoyando del Nuget Package [**Jubatus.WebApi.Extensions**](https://www.nuget.org/packages/Jubatus.WebApi.Extensions/).
+Este es un proyecto de ejemplo que implementa una WebApi en .NET 9, el cual permite ejecutar un CRUD de Usuarios sobre una colección de [**MongoDB**](https://www.mongodb.com), y para su construcción nos estamos apoyando del Nuget Package [**Jubatus.WebApi.Extensions**](https://www.nuget.org/packages/Jubatus.WebApi.Extensions/).
 
 ```
   Jubatus.WebApi.Implementation \
@@ -50,7 +50,7 @@ Este es un proyecto de ejemplo que implementa una WebApi en .NET 8, el cual perm
 - [x]  El WebApi de Usuarios, requiere que quien lo vaya a consumir se autentique previamente para asignarle un [**Bearer Token - JWT**](https://jwt.io/introduction).
 - [x]  Los end-points para ejecutar el CRUD de Usuarios, requieren de una autorizacion a través de un Bearer Tokens - JWT, que solo será asignado al usuario autenticado.
 - [x]  El Bearer Token asignado al Usuario autenticado tendrá una vigencia máxima de 10 minutos.
-- [x]  En los controladores y los end-points del WebApi de Usuarios, se implementa el [**manejo de versiones**](https://weblogs.asp.net/ricardoperes/asp-net-core-api-versioning), para facilitar una transición sin traumas hacia las futuras versiones de la WebApi.
+- [x]  En los controladores y los end-points del WebApi de Usuarios, se implementa el [**Manejo de Versiones**](https://weblogs.asp.net/ricardoperes/asp-net-core-api-versioning), para facilitar una transición sin traumas hacia las futuras versiones de la WebApi.
 - [x]  En el WebApi de Usuarios se está implementando [**RateLimiter**](https://learn.microsoft.com/en-us/dotnet/api/system.threading.ratelimiting.ratelimiter?view=aspnetcore-8.0) tipo "*fixed*", para evitar la sobrecarga y el abuso en el consumo del Servicio.
 - [x]  En los DTOs y Modelos se implementa [**DataValidation**](https://learn.microsoft.com/en-us/aspnet/mvc/overview/older-versions-1/models-data/validation-with-the-data-annotation-validators-cs) para minimizar los riesgos de inconsistencias en los datos ingresados por el consumidor.
 - [x]  Para el manejo de las configuraciones del proyecto, se están utilizando directamente las clases expuestas por el paquete `Jubatus.WebApi.Extensions`. y localmente al proyecto, se están trabajando con [**user-secrets**](https://learn.microsoft.com/en-us/aspnet/core/security/app-secrets?view=aspnetcore-8.0&tabs=linux) para Desarrollo y con variables de entorno a través de Contenedores de Docker para Producción.
@@ -90,7 +90,7 @@ ValidateLifetime               // Se debe validar la vigencia del JWT? (true/fal
 ValidateIssuerSigningKey       // Validar la firma del Emisor? (true/false).
 AuthUser                       // Usuario autorizado para solicitar JWT.
 AuthPass                       // Contraseña (cifrada) del usuario autorizado para solicitar JWT.
-ReverseProxyClusterId          // Id del Cluster habilitado para el enrutamiento - Ej: "UsersCluster".
+ReverseProxyClusterId          // Cluster Id habilitado para el enrutamiento - Ej: "UsersCluster".
 ReverseProxyPath               // Ruta para el enrutamiento - Ej: "/users-service/{**catch-all}".
 ReverseProxyRateLimiterPolicy  // Política para el RateLimiter del ReverseProxy - Ej: "fixed".
 ReverseProxyPathPattern        // Patrón de enrutamiento - Ej: "{**catch-all}".
@@ -118,7 +118,6 @@ docker compose down
 ## Menciones y agradecimientos:
 
 - [x]  Agradezco el gran apoyo y sus valiosas recomendaciones de [**Eddie Velasquez**](https://github.com/eddievelasquez), mi mentor y amigo.
-- [x]  Gracias a / Thanks so much to [**Timo Vilppu**](https://github.com/vilppu) por su valioso aporte y la información suministrada sobre el tema `IAsyncEnumerable`.
 - [x]  Gracias tambien a / Thanks so much to [**Michael Altmann**](https://github.com/altmann) por su aporte e información sobre `FluentResults`.
 - [x]  Finalmente y no menos importante, un agradecimiento por el valioso aporte que hacen a la comunidad [**Stefan Djokic**](https://thecodeman.net/) y [**Milan Jovanović**](https://www.milanjovanovic.tech/)
 
@@ -128,11 +127,10 @@ docker compose down
 "Microsoft.Extensions.Configuration" Version="8.0.0"
 "Microsoft.Extensions.Configuration.UserSecrets" Version="8.0.0"
 "Yarp.ReverseProxy" Version="2.1.0"
-"Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.8"
-"Microsoft.AspNetCore.OpenApi" Version="8.0.4"
-"Swashbuckle.AspNetCore" Version="6.7.0"
-"Jubatus.WebApi.Extensions" Version="1.3.37"
-"SonarAnalyzer.CSharp" Version="9.32.0.97167"
+"Microsoft.AspNetCore.Authentication.JwtBearer" Version="9.0.3"
+"Microsoft.AspNetCore.OpenApi" Version="9.0.3"
+"Swashbuckle.AspNetCore" Version="8.0.0"
+"Jubatus.WebApi.Extensions" Version="1.4.41"
 ```
 
 > [!NOTE]
